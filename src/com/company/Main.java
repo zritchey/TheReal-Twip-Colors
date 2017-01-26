@@ -25,53 +25,57 @@ public class Main {
             colors[i]=s.split(",");
         }
         sc.close();
-
+        Scanner kbin=new Scanner(System.in);
         System.out.println("This program will help identify a color.\n");
         System.out.println("There are three options. Choose one to Enter into the program.");
         System.out.println("\n1: Color Name \n2: Hexidecimal \n3: RGB Triplet\n");
-        sc=new Scanner(System.in);
         System.out.print("Enter the option number you want: ");
-        int choice=sc.nextInt();
+        int choice=kbin.nextInt();
         boolean exist=false;
         String name="";
         String hex="";
         String rgb="";
         while(choice >3||choice <1){
             System.out.println("That's not an option. Try again");
-            choice=sc.nextInt();
+            choice=kbin.nextInt();
         }
         System.out.print("Enter the information: ");
+        String input=kbin.nextLine().replaceAll(" ","").replaceAll("\t","").replaceAll("\\)","").replaceAll("\\(","");
+        while(input.length()<1){
+            input=kbin.nextLine().replaceAll(" ","").replaceAll("\t","").replaceAll("\\)","").replaceAll("\\(","");
+        }
         if (choice==1){
-            name=sc.nextLine().replaceAll(" ","").replaceAll("\t","");
+            name=input;
             hex=namer(name,choice);
-            rgb=  toRGB(hex,choice)   ;
+            rgb=  toRGB(hex,choice);
         }
         if (choice==2){
-            hex=sc.nextLine().replaceAll(" ","").replaceAll("\t","");
+            hex=input;
             name=namer(hex,choice);
             rgb= toRGB(hex,choice);
         }
         if(choice ==3){
-            rgb=sc.nextLine();
+            rgb=input;
             while (rgb.split(",").length!=3){
                 System.out.println("I think you messed up the commas in the RGD triple. Try again");
-                rgb=sc.nextLine();
+                rgb=kbin.nextLine();
             }
             rgb.replaceAll(" ","").replaceAll("\t","").replaceAll("\\)","").replaceAll("\\(","");
             hex=toRGB(rgb, choice);
             name=namer(hex,2);
+            rgb="("+rgb+")";
         }
-        if (!name.equals("False")) {
-            System.out.println("Name: "+name+"\nHexidecimal: "+hex+"\nRGB Triple: "+rgb+"\n");
+        if (name.equals("False")||hex.equals("False")) {
+            System.out.println("Your information was invalid.");
         }
         else{
-            System.out.println("Your information was invalid.");
+            System.out.println("Name: "+name+"\nHexidecimal: "+hex+"\nRGB Triple: "+rgb+"\n");
         }
     }
     public static String namer(String s,int k){
         String n="False";
         for (int i=0; i<colors.length;i++){
-            if (s.equalsIgnoreCase(colors[i][k-1]));
+            if (s.equalsIgnoreCase(colors[i][k-1]))
             n=colors[i][(k)%2];
         }
         return n;
@@ -90,7 +94,10 @@ public class Main {
         else{
             String []a=h.split(",");
            for (int i=0;i<a.length;i++){
-               s+=Integer.toHexString(Integer.parseInt(a[i]));
+               String part=Integer.toHexString(Integer.parseInt(a[i]));
+               if(part.length()<2)
+                   part="0"+part;
+               s+=part;
            }
         }
         return s;
